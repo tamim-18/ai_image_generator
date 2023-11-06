@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Loader, FormField, Card } from "../components";
 const RenderCards = ({ data, title }) => {
-  if (data?.length > 0)
+  if (data?.length > 0) {
     return data.map((item) => <Card key={item._id} {...item} />);
+  }
   return (
     <h2 className=" mt-5 font-bold text-[#6449ff] text-xl uppercase">
       {title}
@@ -12,31 +13,47 @@ const RenderCards = ({ data, title }) => {
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const [allPosts, setAllPosts] = useState(null);
-  const [search, setSearch] = useState("abc");
-  // const fetchPosts = async () => {
-  //   setLoading(true);
+  const [search, setSearch] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const fetchPosts = async () => {
+    setLoading(true);
 
-  //   try {
-  //     const response = await fetch("http://localhost:8080/api/v1/post", {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/post", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       setAllPosts(result.data.reverse());
-  //     }
-  //   } catch (err) {
-  //     alert(err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
+      if (response.ok) {
+        const result = await response.json();
+        setAllPosts(result.data.reverse());
+      }
+    } catch (err) {
+      alert(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+  const handleSearch = (e) => {
+    clearTimeout(searchTimeout);
+    setSearch(e.target.value);
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResults = allPosts.filter(
+          (post) =>
+            post.prompt.toLowerCase().includes(search.toLowerCase()) ||
+            post.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setSearchResults(searchResults);
+      }, 500)
+    );
+  };
 
   return (
     <div>
@@ -51,7 +68,14 @@ const Home = () => {
           </p>
         </div>
         <div className=" mt-16">
-          <FormField />
+          <FormField
+            labelName="Search Post"
+            type="text"
+            name="text"
+            placeHolder="search post"
+            value={search}
+            handleChange={handleSearch}
+          />
         </div>
         <div className="mt-10">
           {loading ? (
@@ -68,9 +92,9 @@ const Home = () => {
               )}
               <div className="grid grid-cols-1 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 gap-3">
                 {search ? (
-                  <RenderCards data={[]} title="No results found" />
+                  <RenderCards data={searchResults} title="No results found" />
                 ) : (
-                  <RenderCards data={[]} title="No posts found" />
+                  <RenderCards data={allPosts} title="No posts found" />
                 )}
               </div>
             </>
