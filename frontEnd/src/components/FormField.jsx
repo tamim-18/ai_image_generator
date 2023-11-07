@@ -12,17 +12,17 @@ const FormField = ({
 }) => {
   return (
     <div>
-      <div className=" flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2">
         <label
           htmlFor={name}
-          className=" block text-sm font-medium text-gray-900 "
+          className="block text-sm font-medium text-gray-900"
         >
           {labelName}
         </label>
         {isSurpriseMe && (
           <button
             type="button"
-            className=" text-xs bg-[#ECECF1] py-1 px-2 rounded-[5px] text-black font-semibold"
+            className="text-xs bg-[#ECECF1] py-1 px-2 rounded-[5px] text-black font-semibold"
             onClick={handleSurpriseMe}
           >
             Surprise Me
@@ -33,10 +33,10 @@ const FormField = ({
         type={type}
         name={name}
         id={name}
-        value={value}
+        value={value || ""} // Ensure value is never null
         onChange={handleChange}
         placeholder={placeHolder}
-        className=" bg-gray-50 border border-b-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#4669ff] focus:border-[#4669ff] w-full outline-none block p-3"
+        className="bg-gray-50 border border-b-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#4669ff] focus:border-[#4669ff] w-full outline-none block p-3"
         required
       />
     </div>

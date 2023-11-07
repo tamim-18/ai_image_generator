@@ -3,6 +3,8 @@ import { preview } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { getRandomPrompt } from "../utils";
 import { FormField, Loader } from "../components";
+import Swal from "sweetalert2";
+
 const CreatePost = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -62,14 +64,25 @@ const CreatePost = () => {
         const data = await response.json();
         setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
       } catch (err) {
-        alert(err);
+        // Use Swal.fire to display an error message
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred",
+        });
       } finally {
         setGenerateImg(false);
       }
     } else {
-      alert("Please provide proper prompt");
+      // Use Swal.fire to display a warning message
+      Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text: "Please provide a proper prompt",
+      });
     }
   };
+
   return (
     <section className=" max-w-7xl mx-auto">
       <div>
